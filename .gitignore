@@ -1,0 +1,10 @@
+.gradle
+.idea
+build
+
+application-dev.properties
+application-oauth.properties
+application-api.properties
+application-real-db.properties
+
+

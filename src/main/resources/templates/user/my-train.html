@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>무슨역이Now</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body class="bg-secondary">
+<div th:replace="~{/fragment/nav::nav}">
+</div>
+<div class="container m-5">
+        <div class="row">
+            <div class="col text-start">
+                <button type="button" class="btn btn-dark my-1" onclick="history.go(-1)">뒤로</button>
+            </div>
+            <div class="col text-end">
+                <button type="button" class="btn btn-light my-1" onclick="location.reload()">새로고침</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-center">
+                <table class="table table-dark table-hover">
+                    <thead>
+                    <tr>
+                        <td>열차선택</td>
+                        <td>호선</td>
+                        <td>이전역</td>
+                        <td>현재역</td>
+                        <td>다음역</td>
+                        <td>행선지</td>
+                        <td>급행유무</td>
+                        <td>막차유무</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="train : ${myTrains}">
+                        <td>
+                            <input type="radio" class="btn-check" name="trainNo" th:id="${train.trainNo}" th:value="${train.trainNo}">
+                            <label class="btn btn-outline-danger" th:for="${train.trainNo}">
+                                <span th:text="${train.trainNo}"></span>
+                            </label>
+                        </td>
+                        <td>
+                            <span th:text="${train.subwayNm}"></span>
+                        </td>
+                        <td th:text="${train.prevStatnNm}"></td>
+                        <td th:text="${train.statnNm}"></td>
+                        <td th:text="${train.nextStatnNm}"></td>
+                        <td th:text="${train.statnTnm}"></td>
+                        <td th:text="${train.directAt}"></td>
+                        <td th:text="${train.lstcarAt}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-danger" id="btn-get-off">하차</button>
+            </div>
+        </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="/js/api.js"></script>
+</body>
+</html>
