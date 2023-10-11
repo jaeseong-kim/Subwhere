@@ -21,7 +21,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .headers().frameOptions().disable()
                 .and()
                 .authorizeRequests()
-                .mvcMatchers("/","/subway/**","/test-call/**").permitAll()
+                .mvcMatchers("/","/subway/**").permitAll()
                 .mvcMatchers("/user/**").authenticated()
                 .and()
                 .logout().logoutSuccessUrl("/")
