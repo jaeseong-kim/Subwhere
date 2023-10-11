@@ -26,4 +26,4 @@ echo "> $JAR_NAME 를 포트 번호:8083로 실행합니다."
 nohup java -jar \
   -Dspring.config.location=classpath:/application.properties,/home/ec2-user/subwhere/application-oauth.properties,\
 /home/ec2-user/subwhere/application-api.properties,/home/ec2-user/subwhere/application-real-db.properties \
-$JAR_NAME > $REPOSITORY/nohup.out 2>&1 &
+$JAR_NAME > $REPOSITORY/nohup1.out 2>&1 &
