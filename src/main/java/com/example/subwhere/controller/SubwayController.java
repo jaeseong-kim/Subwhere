@@ -73,11 +73,4 @@ public class SubwayController {
 
         return "/user/my-train";
     }
-
-    @ResponseBody
-    @GetMapping("/test-call/{lineNum}")
-    public JsonDto testCall(@PathVariable String lineNum) {
-        //return ApiUtils.callTrainsApiByLineName(lineNum);
-        return null;
-    }
 }
