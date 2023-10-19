@@ -6,7 +6,7 @@ email : subwheretest@gmail.com
 password : subwhere0011  
   
 홈페이지 : [무슨역이Now](ec2-13-209-106-121.ap-northeast-2.compute.amazonaws.com:8083)  
-노션 : [무슨역이Now](https://www.notion.so/Now-cc118ca4f35c4d74be5391d2afcb28cc)
+노션 : [무슨역이Now](https://river-stool-2c7.notion.site/Now-cc118ca4f35c4d74be5391d2afcb28cc?pvs=4)
 
 ## 프로젝트 소개
     내가 탄 지하철을 선택해서 지하철이 현재 무슨 역에 있는지 알 수 있는 서비스입니다.  
