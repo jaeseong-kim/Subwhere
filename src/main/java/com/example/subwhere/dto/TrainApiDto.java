@@ -1,12 +1,16 @@
 package com.example.subwhere.dto;
 
+import com.example.subwhere.type.SUBWAY_MAP;
+import com.example.subwhere.utils.SubwayUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+@Slf4j
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
@@ -59,6 +63,150 @@ public class TrainApiDto {
         }
 
         statnNm = statnNm.substring(0, statnNm.indexOf("("));
+    }
+
+    public TrainViewDto toTrainViewDto() {
+
+        SUBWAY_MAP LINE = SubwayUtils.getLineMap(subwayNm, statnNm, statnTnm, updnLine);
+        List<String> lineMap = LINE.getMap();
+
+        String prevStatnNm = "";
+        String curStatnNm = "";
+        String nextStatnNm = "";
+
+        int index = lineMap.indexOf(statnNm);
+
+        if (trainSttus == 0 || trainSttus == 1) {
+            log.info("index = {}, trainApi.getStatnNm = {}", index, statnNm);
+
+            if (index == 0) {
+
+                if (updnLine == 0) {
+
+                    prevStatnNm = lineMap.get(lineMap.indexOf(statnNm) + 1);
+                    curStatnNm = statnNm;
+                    nextStatnNm = "종점";
+
+                } else {
+
+                    prevStatnNm = "출발점";
+                    curStatnNm = statnNm;
+                    nextStatnNm = lineMap.get(lineMap.indexOf(statnNm) + 1);
+
+                }
+
+            } else if (index == lineMap.size() - 1) {
+
+                if (updnLine == 0) {
+
+                    prevStatnNm = "출발점";
+                    curStatnNm = statnNm;
+                    nextStatnNm = lineMap.get(lineMap.indexOf(statnNm) - 1);
+
+                } else {
+
+                    prevStatnNm = lineMap.get(lineMap.indexOf(statnNm) - 1);
+                    curStatnNm = statnNm;
+                    nextStatnNm = "종점";
+
+                }
+
+            } else {
+
+                if (updnLine == 0) {
+
+                    prevStatnNm = lineMap.get(lineMap.indexOf(statnNm) + 1);
+                    curStatnNm = statnNm;
+                    nextStatnNm = lineMap.get(lineMap.indexOf(statnNm) - 1);
+
+                } else {
+
+                    prevStatnNm = lineMap.get(lineMap.indexOf(statnNm) - 1);
+                    curStatnNm = statnNm;
+                    nextStatnNm = lineMap.get(lineMap.indexOf(statnNm) + 1);
+
+                }
+
+            }
+
+        } else if (trainSttus == 2) {
+
+            if (updnLine == 0) {
+
+                prevStatnNm = statnNm;
+                curStatnNm = "이동중";
+                nextStatnNm = lineMap.get(lineMap.indexOf(statnNm) - 1 < 0 ?
+                        0 : lineMap.indexOf(statnNm) - 1);
+
+            } else {
+
+                prevStatnNm = statnNm;
+                curStatnNm = "이동중";
+                nextStatnNm = lineMap.get(lineMap.indexOf(statnNm) + 1 >= lineMap.size() ?
+                        lineMap.indexOf(statnNm) : lineMap.indexOf(statnNm) + 1);
+
+            }
+
+        } else {
+
+            if (index == 0) {
+
+                if (updnLine == 0) {
+
+                    prevStatnNm = lineMap.get(lineMap.indexOf(statnNm) + 1);
+                    curStatnNm = "이동중";
+                    nextStatnNm = statnNm;
+
+                } else {
+
+                    prevStatnNm = "출발점";
+                    curStatnNm = "이동중";
+                    nextStatnNm = statnNm;
+                }
+            } else if (index == lineMap.size() - 1) {
+
+                if (updnLine == 0) {
+
+                    prevStatnNm = "출발점";
+                    curStatnNm = "이동중";
+                    nextStatnNm = statnNm;
+
+                } else {
+
+                    prevStatnNm = lineMap.get(lineMap.indexOf(statnNm) - 1);
+                    curStatnNm = "이동중";
+                    nextStatnNm = statnNm;
+                }
+
+            } else {
+
+                if (updnLine == 0) {
+                    prevStatnNm = lineMap.get(lineMap.indexOf(statnNm) + 1);
+                    curStatnNm = "이동중";
+                    nextStatnNm = statnNm;
+                } else {
+                    prevStatnNm = lineMap.get(lineMap.indexOf(statnNm) - 1);
+                    curStatnNm = "이동중";
+                    nextStatnNm = statnNm;
+                }
+            }
+
+
+        }
+
+        String direct = (directAt == 0 ? "일반" : (directAt == 1 ? "급행" : "특급"));
+        String isLast = (lstcarAt == 0 ? " " : "막차");
+
+        return TrainViewDto.builder()
+                .trainNo(trainNo)
+                .subwayNm(subwayNm)
+                .prevStatnNm(prevStatnNm)
+                .statnNm(curStatnNm)
+                .nextStatnNm(nextStatnNm)
+                .statnTnm(statnTnm + "행")
+                .directAt(direct)
+                .lstcarAt(isLast)
+                .build();
     }
 
 }
