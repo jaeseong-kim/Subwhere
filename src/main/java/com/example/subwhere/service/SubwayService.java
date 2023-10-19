@@ -39,28 +39,25 @@ public class SubwayService {
             return null;
         }
 
-        List<TrainViewDto> trainsView = new ArrayList<>();
-
-        for (TrainApiDto trainApi : trainsApi) {
-            TrainViewDto train = new TrainViewDto();
-            trainApi.removeStatnNmParenthesis();
-            trainsView.add(train.toTrainViewDto(trainApi));
-        }
-
-        return trainsView;
+        return trainsApi.stream()
+                .map(trainApi -> {
+                        trainApi.removeStatnNmParenthesis();
+                        return trainApi.toTrainViewDto();
+                    })
+                .collect(Collectors.toList());
     }
 
 
     public void saveTrain(TrainSaveDto train, String email) {
 
         myTrainRepository.save(MyTrain.builder()
-                                        .trainNo(train.getTrainNo())
-                                        .email(email)
-                                        .subwayNm(train.getSubwayNm())
-                                        .build());
+                .trainNo(train.getTrainNo())
+                .email(email)
+                .subwayNm(train.getSubwayNm())
+                .build());
     }
 
-    public boolean alreadySaved(String trainNo, String email){
+    public boolean alreadySaved(String trainNo, String email) {
         return myTrainRepository.existsByTrainNoAndEmail(trainNo, email);
     }
 
@@ -103,7 +100,7 @@ public class SubwayService {
 
         RestTemplate restTemplate = new RestTemplate();
         String host = "http://swopenAPI.seoul.go.kr";
-        String path = "/api/subway/" + key + "/json/realtimePosition/1/100/";
+        String path = "/api/subway/" + key + "/json/realtimePosition/1/150/";
 
         URI uri = UriComponentsBuilder
                 .fromUriString(host)
@@ -122,7 +119,7 @@ public class SubwayService {
 
 
         if (!responseEntity.getBody().isOk()) {
-            //예외처리
+            return null;
         }
 
         return responseEntity.getBody().getRealtimePositionList();
