@@ -60,6 +60,9 @@ public class SubwayController {
         SessionUser user = (SessionUser) httpSession.getAttribute("user");
 
         List<String> myLineNames = subwayService.getMyLineName(user.getEmail());
+        if(myLineNames == null){
+            return "/user/my-train";
+        }
 
         List<TrainViewDto> allTrains = new ArrayList<>();
         for (String lineName : myLineNames) {
