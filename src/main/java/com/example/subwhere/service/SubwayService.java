@@ -62,20 +62,10 @@ public class SubwayService {
     }
 
     public List<String> getMyLineName(String email) {
-        List<MyTrain> myTrains = myTrainRepository.findAllByEmail(email);
-
-        List<String> lineNames = new ArrayList<>();
-        for (MyTrain myTrain : myTrains) {
-            String subwayNm = myTrain.getSubwayNm();
-
-            if (lineNames.contains(subwayNm)) {
-                continue;
-            }
-
-            lineNames.add(subwayNm);
-        }
-
-        return lineNames;
+        return myTrainRepository.findAllByEmail(email).stream()
+                                                        .map(MyTrain::getSubwayNm)
+                                                        .distinct()
+                                                        .collect(Collectors.toList());
     }
 
     public List<TrainViewDto> findMyTrainsFromAllTrains(List<TrainViewDto> allTrains, String email) {
@@ -83,6 +73,7 @@ public class SubwayService {
         // List<MyTrain> -> List<String>, MyTrain 리스트를 TrainNo만 뽑은 리스트로
         List<String> myTrainNos = myTrainRepository.findAllByEmail(email)
                 .stream().map(MyTrain::getTrainNumber).collect(Collectors.toList());
+
 
         List<TrainViewDto> result = new ArrayList<>();
         for (String myTrainNo : myTrainNos) {
