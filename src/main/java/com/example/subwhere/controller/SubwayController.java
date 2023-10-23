@@ -61,7 +61,7 @@ public class SubwayController {
 
         List<String> myLineNames = subwayService.getMyLineName(user.getEmail());
         if(myLineNames == null){
-            return "/user/my-train";
+            return "user/my-train";
         }
 
         List<TrainViewDto> allTrains = new ArrayList<>();
@@ -74,6 +74,6 @@ public class SubwayController {
 
         model.addAttribute("myTrains", myTrains);
 
-        return "/user/my-train";
+        return "user/my-train";
     }
 }
