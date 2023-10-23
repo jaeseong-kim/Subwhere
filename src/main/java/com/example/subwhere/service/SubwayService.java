@@ -39,46 +39,33 @@ public class SubwayService {
             return null;
         }
 
-        List<TrainViewDto> trainsView = new ArrayList<>();
-
-        for (TrainApiDto trainApi : trainsApi) {
-            TrainViewDto train = new TrainViewDto();
-            trainApi.removeStatnNmParenthesis();
-            trainsView.add(train.toTrainViewDto(trainApi));
-        }
-
-        return trainsView;
+        return trainsApi.stream()
+                .map(trainApi -> {
+                        trainApi.removeStatnNmParenthesis();
+                        return trainApi.toTrainViewDto();
+                    })
+                .collect(Collectors.toList());
     }
 
 
     public void saveTrain(TrainSaveDto train, String email) {
 
         myTrainRepository.save(MyTrain.builder()
-                                        .trainNo(train.getTrainNo())
-                                        .email(email)
-                                        .subwayNm(train.getSubwayNm())
-                                        .build());
+                .trainNo(train.getTrainNo())
+                .email(email)
+                .subwayNm(train.getSubwayNm())
+                .build());
     }
 
-    public boolean alreadySaved(String trainNo, String email){
+    public boolean alreadySaved(String trainNo, String email) {
         return myTrainRepository.existsByTrainNoAndEmail(trainNo, email);
     }
 
     public List<String> getMyLineName(String email) {
-        List<MyTrain> myTrains = myTrainRepository.findAllByEmail(email);
-
-        List<String> lineNames = new ArrayList<>();
-        for (MyTrain myTrain : myTrains) {
-            String subwayNm = myTrain.getSubwayNm();
-
-            if (lineNames.contains(subwayNm)) {
-                continue;
-            }
-
-            lineNames.add(subwayNm);
-        }
-
-        return lineNames;
+        return myTrainRepository.findAllByEmail(email).stream()
+                                                        .map(MyTrain::getSubwayNm)
+                                                        .distinct()
+                                                        .collect(Collectors.toList());
     }
 
     public List<TrainViewDto> findMyTrainsFromAllTrains(List<TrainViewDto> allTrains, String email) {
@@ -86,6 +73,7 @@ public class SubwayService {
         // List<MyTrain> -> List<String>, MyTrain 리스트를 TrainNo만 뽑은 리스트로
         List<String> myTrainNos = myTrainRepository.findAllByEmail(email)
                 .stream().map(MyTrain::getTrainNumber).collect(Collectors.toList());
+
 
         List<TrainViewDto> result = new ArrayList<>();
         for (String myTrainNo : myTrainNos) {
@@ -103,7 +91,7 @@ public class SubwayService {
 
         RestTemplate restTemplate = new RestTemplate();
         String host = "http://swopenAPI.seoul.go.kr";
-        String path = "/api/subway/" + key + "/json/realtimePosition/1/100/";
+        String path = "/api/subway/" + key + "/json/realtimePosition/1/150/";
 
         URI uri = UriComponentsBuilder
                 .fromUriString(host)
@@ -122,7 +110,7 @@ public class SubwayService {
 
 
         if (!responseEntity.getBody().isOk()) {
-            //예외처리
+            return null;
         }
 
         return responseEntity.getBody().getRealtimePositionList();

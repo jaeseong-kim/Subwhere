@@ -60,6 +60,9 @@ public class SubwayController {
         SessionUser user = (SessionUser) httpSession.getAttribute("user");
 
         List<String> myLineNames = subwayService.getMyLineName(user.getEmail());
+        if(myLineNames == null){
+            return "user/my-train";
+        }
 
         List<TrainViewDto> allTrains = new ArrayList<>();
         for (String lineName : myLineNames) {
@@ -71,13 +74,6 @@ public class SubwayController {
 
         model.addAttribute("myTrains", myTrains);
 
-        return "/user/my-train";
-    }
-
-    @ResponseBody
-    @GetMapping("/test-call/{lineNum}")
-    public JsonDto testCall(@PathVariable String lineNum) {
-        //return ApiUtils.callTrainsApiByLineName(lineNum);
-        return null;
+        return "user/my-train";
     }
 }
