@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -126,5 +127,10 @@ public class SubwayService {
         myTrainRepository.delete(optMyTrain.get());
 
         return "선택한 지하철에서 내렸습니다.";
+    }
+
+    @Scheduled(cron="0 0 2 ? * SUN-SAT")
+    public void clearTrains(){
+        myTrainRepository.deleteAll();
     }
 }
