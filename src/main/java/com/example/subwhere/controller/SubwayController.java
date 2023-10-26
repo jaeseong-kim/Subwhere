@@ -1,7 +1,6 @@
 package com.example.subwhere.controller;
 
 import com.example.subwhere.config.auth.SessionUser;
-import com.example.subwhere.dto.JsonDto;
 import com.example.subwhere.dto.TrainSaveDto;
 import com.example.subwhere.dto.TrainViewDto;
 import com.example.subwhere.service.SubwayService;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,14 +22,22 @@ public class SubwayController {
     private final SubwayService subwayService;
 
     @GetMapping("/subway/line")
-    public String lineSelect() {
+    public String lineSelect(@SessionAttribute(name = "user", required = false) SessionUser user, Model model) {
+
+        if (user != null) {
+            model.addAttribute("name", user.getName());
+        }
+
         return "subway/line-select";
     }
 
     @GetMapping("/subway/line/{lineName}")
-    public String trainList(@PathVariable String lineName, Model model) {
+    public String trainList(@PathVariable String lineName, @SessionAttribute(name = "user", required = false) SessionUser user,
+                            Model model) {
 
-        log.info("lineName = {}", lineName);
+        if (user != null) {
+            model.addAttribute("name", user.getName());
+        }
 
         model.addAttribute("trains", subwayService.getTrains(lineName));
         model.addAttribute("subwayNm", lineName);
@@ -40,14 +46,10 @@ public class SubwayController {
     }
 
     @PostMapping("/user/train")
-    public String saveMyTrain(@ModelAttribute TrainSaveDto train, HttpSession httpSession) {
+    public String saveMyTrain(@ModelAttribute TrainSaveDto train, @SessionAttribute(name = "user", required = true) SessionUser user) {
 
-        log.info("train.trainNo = {}, train.subwayNm = {}, httpSession.user = {}", train.getTrainNo(), train.getSubwayNm(),
-                httpSession.getAttribute("user"));
 
-        SessionUser user = (SessionUser) httpSession.getAttribute("user");
-
-        if(!subwayService.alreadySaved(train.getTrainNo(), user.getEmail())){
+        if (!subwayService.alreadySaved(train.getTrainNo(), user.getEmail())) {
             subwayService.saveTrain(train, user.getEmail());
         }
 
@@ -55,12 +57,14 @@ public class SubwayController {
     }
 
     @GetMapping("/user/train")
-    public String myTrainPage(Model model, HttpSession httpSession) {
+    public String myTrainPage(Model model, @SessionAttribute(name = "user", required = true) SessionUser user) {
 
-        SessionUser user = (SessionUser) httpSession.getAttribute("user");
+        if (user != null) {
+            model.addAttribute("name", user.getName());
+        }
 
         List<String> myLineNames = subwayService.getMyLineName(user.getEmail());
-        if(myLineNames == null){
+        if (myLineNames == null) {
             return "user/my-train";
         }
 
