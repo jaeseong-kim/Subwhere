@@ -5,7 +5,7 @@
 email : subwheretest@gmail.com  
 password : subwhere0011  
   
-서비스 이용 : [무슨역이Now](https://ec2-13-209-106-121.ap-northeast-2.compute.amazonaws.com:8083)  
+서비스 이용 : [무슨역이Now](http://ec2-13-209-106-121.ap-northeast-2.compute.amazonaws.com:8083)  
 노션 : [무슨역이Now](https://river-stool-2c7.notion.site/Now-cc118ca4f35c4d74be5391d2afcb28cc?pvs=4)
 
 ## 프로젝트 소개
